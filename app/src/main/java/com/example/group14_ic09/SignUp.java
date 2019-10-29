@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,7 +29,7 @@ public class SignUp extends AppCompatActivity {
     EditText lname;
     EditText password1;
     EditText password2;
-    String password;
+    String password,firstname,lastname,emailid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,21 +42,29 @@ public class SignUp extends AppCompatActivity {
         password2 =findViewById(R.id.et_password_2);
 
         if(password1.getText().toString().equals(password2.getText().toString())){
-            password = password1.toString();
+            password = password1.getText().toString();
         }
 
-        RequestBody formBody = new FormBody.Builder()
-                .add("email", email.getText().toString())
-                .add("fname", fname.getText().toString())
-                .add("lname", lname.getText().toString())
-                .add("password", password)
-                .build();
 
-        try {
-            new getNewAysnc().execute(formBody);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Log.d("demo",email.getText().toString());
+        Log.d("demo",fname.getText().toString());
+        Log.d("demo",lname.getText().toString());
+        Log.d("demo",password);
+        findViewById(R.id.buttonSignup).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                try {
+                    firstname = fname.getText().toString();
+                    lastname = lname.getText().toString();
+                    emailid = email.getText().toString();
+                    new getNewAysnc().execute(" ");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
 
     }
     private boolean isConnected() {
@@ -73,26 +83,42 @@ public class SignUp extends AppCompatActivity {
 
 
 
-    private class getNewAysnc extends AsyncTask<RequestBody,Void,String>{
+    private class getNewAysnc extends AsyncTask<String,Void,String>{
 
         @Override
-        protected String doInBackground(RequestBody... strings) {
+        protected String doInBackground(String... strings) {
             OkHttpClient client = new OkHttpClient();
+
+            RequestBody formBody = new FormBody.Builder()
+                    .add("email", emailid)
+                    .add("password", password)
+                    .add("fname", firstname)
+                    .add("lname", lastname)
+                    .build();
+                Log.d("demo", emailid);
 
             Request request = new Request.Builder()
                     .url("http://ec2-18-234-222-229.compute-1.amazonaws.com/api/signup")
-                    .post(strings[0])
+                    .post(formBody)
                     .build();
-
-            try (Response response = client.newCall(request).execute()) {
+            Log.d("demo", String.valueOf(request));
+            try {
+                Response response = client.newCall(request).execute();
+//                Log.d("demo", String.valueOf(response));
                 if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
 //
-                System.out.println(response.body().string());
+//                System.out.println(response.body().string());
                 return response.body().string();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            Log.d("demo",""+s);
+            super.onPostExecute(s);
         }
     }
 
