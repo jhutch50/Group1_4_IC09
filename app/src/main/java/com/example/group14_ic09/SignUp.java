@@ -1,5 +1,9 @@
 package com.example.group14_ic09;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.EditText;
 
@@ -46,6 +50,17 @@ public class SignUp extends AppCompatActivity {
         }
 
     }
+    private boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (networkInfo == null || !networkInfo.isConnected() ||
+                (networkInfo.getType() != ConnectivityManager.TYPE_WIFI
+                        && networkInfo.getType() != ConnectivityManager.TYPE_MOBILE)) {
+            return false;
+        }
+        return true;
+    }
 
     private final OkHttpClient client = new OkHttpClient();
 
@@ -68,6 +83,13 @@ public class SignUp extends AppCompatActivity {
         }
     }
 
+    private class getNewAysnc extends AsyncTask<String,Void,String>{
+
+        @Override
+        protected String doInBackground(String... strings) {
+            return null;
+        }
+    }
 
 
 }
