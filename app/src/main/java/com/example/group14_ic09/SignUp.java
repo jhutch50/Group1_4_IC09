@@ -1,6 +1,7 @@
 package com.example.group14_ic09;
 
 import android.os.Bundle;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +18,7 @@ import okhttp3.Response;
 
 public class SignUp extends AppCompatActivity {
 
+    EditText
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,10 +31,13 @@ public class SignUp extends AppCompatActivity {
 
     public void run() throws Exception {
         RequestBody formBody = new FormBody.Builder()
-                .add("search", "Jurassic Park")
+                .add("user_email", email)
+                .add("user_fname", fname)
+                .add("user_lname", lname)
+                .add("user_role", role)
                 .build();
         Request request = new Request.Builder()
-                .url("https://en.wikipedia.org/w/index.php")
+                .url("http://ec2-18-234-222-229.compute-1.amazonaws.com/api/")
                 .post(formBody)
                 .build();
 
