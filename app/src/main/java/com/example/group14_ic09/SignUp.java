@@ -43,8 +43,15 @@ public class SignUp extends AppCompatActivity {
             password = password1.toString();
         }
 
+        RequestBody formBody = new FormBody.Builder()
+                .add("email", email.getText().toString())
+                .add("fname", fname.getText().toString())
+                .add("lname", lname.getText().toString())
+                .add("password", password)
+                .build();
+
         try {
-            run();
+            new getNewAysnc().execute(formBody);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,31 +69,29 @@ public class SignUp extends AppCompatActivity {
         return true;
     }
 
-    private final OkHttpClient client = new OkHttpClient();
 
-    public void run() throws Exception {
-        RequestBody formBody = new FormBody.Builder()
-                .add("email", email.getText().toString())
-                .add("fname", fname.getText().toString())
-                .add("lname", lname.getText().toString())
-                .add("password", password)
-                .build();
-        Request request = new Request.Builder()
-                .url("http://ec2-18-234-222-229.compute-1.amazonaws.com/api/signup")
-                .post(formBody)
-                .build();
 
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-//
-            System.out.println(response.body().string());
-        }
-    }
 
-    private class getNewAysnc extends AsyncTask<String,Void,String>{
+
+    private class getNewAysnc extends AsyncTask<RequestBody,Void,String>{
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected String doInBackground(RequestBody... strings) {
+            OkHttpClient client = new OkHttpClient();
+
+            Request request = new Request.Builder()
+                    .url("http://ec2-18-234-222-229.compute-1.amazonaws.com/api/signup")
+                    .post(strings[0])
+                    .build();
+
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+//
+                System.out.println(response.body().string());
+                return response.body().string();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return null;
         }
     }
