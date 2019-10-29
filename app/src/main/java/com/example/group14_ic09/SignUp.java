@@ -18,12 +18,32 @@ import okhttp3.Response;
 
 public class SignUp extends AppCompatActivity {
 
-    EditText
+    EditText email;
+    EditText fname;
+    EditText lname;
+    EditText password1;
+    EditText password2;
+    String password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        email =findViewById(R.id.et_email);
+        fname =findViewById(R.id.et_fname);
+        lname =findViewById(R.id.et_lname);
+        password1 =findViewById(R.id.et_password_1);
+        password2 =findViewById(R.id.et_password_2);
 
+        if(password1.getText().toString().equals(password2.getText().toString())){
+            password = password1.toString();
+        }
+
+        try {
+            run();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -31,13 +51,13 @@ public class SignUp extends AppCompatActivity {
 
     public void run() throws Exception {
         RequestBody formBody = new FormBody.Builder()
-                .add("user_email", email)
-                .add("user_fname", fname)
-                .add("user_lname", lname)
-                .add("user_role", role)
+                .add("email", email.getText().toString())
+                .add("fname", fname.getText().toString())
+                .add("lname", lname.getText().toString())
+                .add("password", password)
                 .build();
         Request request = new Request.Builder()
-                .url("http://ec2-18-234-222-229.compute-1.amazonaws.com/api/")
+                .url("http://ec2-18-234-222-229.compute-1.amazonaws.com/api/signup")
                 .post(formBody)
                 .build();
 
@@ -47,5 +67,7 @@ public class SignUp extends AppCompatActivity {
             System.out.println(response.body().string());
         }
     }
+
+
 
 }
